@@ -1,6 +1,6 @@
 # Monte Carlo GCP Agent Module (Beta)
-This module deploys [Monte Carlo's containerized agent (Beta)](https://hub.docker.com/r/montecarlodata/agent) on GCP 
-Cloud Run, along with storage and roles and service accounts.
+This module deploys Monte Carlo's [containerized agent](https://hub.docker.com/r/montecarlodata/agent) (Beta) on GCP 
+Cloud Run, along with storage, roles and service accounts.
 
 See [here](https://docs.getmontecarlo.com/docs/platform-architecture) for architecture details and alternative deployment options.
 

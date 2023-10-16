@@ -19,6 +19,7 @@ gcloud auth activate-service-account --key-file <(terraform output -json 'key' |
 curl --location "$(terraform output --raw uri)/api/v1/test/health" --header "Authorization: Bearer $(gcloud auth print-identity-token)"
 ```
 See [here](https://github.com/monte-carlo-data/apollo-agent) for agent usage and docs. You should be able to use any endpoint as documented. 
+
 And don't forget to delete any resources when you're done (e.g. `terraform destroy` and revoking the SA locally). 
 
 ## Addendum
