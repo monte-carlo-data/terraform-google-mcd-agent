@@ -10,8 +10,9 @@ locals {
   mcd_agent_store_data_prefixes = [
     "custom-sql-output-samples/",
     "rca",
-    "idempotent"
-  ] # TODO - update to mcd/
+    "idempotent",
+    "mcd/"
+  ]
 
   # Cloud run properties
   mcd_agent_cr_name                             = "mcd-agent-service-${random_id.mcd_agent_id.hex}"
