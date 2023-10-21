@@ -1,0 +1,15 @@
+version: 2.1
+orbs:
+  terraform: circleci/terraform@3.1
+
+workflows:
+  run-validations:
+    jobs:
+      - terraform/fmt:
+          checkout: true
+          context: terraform
+      - terraform/validate:
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/fmt
