@@ -6,13 +6,8 @@ locals {
   mcd_agent_deployment_type = "TERRAFORM"
 
   # Data store properties
-  mcd_agent_store_name = "mcd-agent-store-${random_id.mcd_agent_id.hex}"
-  mcd_agent_store_data_prefixes = [
-    "custom-sql-output-samples/",
-    "rca",
-    "idempotent",
-    "mcd/"
-  ]
+  mcd_agent_store_name        = "mcd-agent-store-${random_id.mcd_agent_id.hex}"
+  mcd_agent_store_data_prefix = "mcd/"
 
   # Cloud run properties
   mcd_agent_cr_name                             = "mcd-agent-service-${random_id.mcd_agent_id.hex}"
@@ -42,7 +37,16 @@ resource "google_storage_bucket" "mcd_agent_store" {
   lifecycle_rule {
     condition {
       age            = 90
-      matches_prefix = local.mcd_agent_store_data_prefixes
+      matches_prefix = [local.mcd_agent_store_data_prefix]
+    }
+    action {
+      type = "Delete"
+    }
+  }
+  lifecycle_rule {
+    condition {
+      age            = 2
+      matches_prefix = ["${local.mcd_agent_store_data_prefix}tmp"]
     }
     action {
       type = "Delete"
