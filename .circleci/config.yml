@@ -64,7 +64,9 @@ jobs:
       - checkout
       - run:
           name: terraform fmt & validate
-          command: make sanity-check
+          command: |
+            apk add --update make
+            make sanity-check
 
 workflows:
   version: 2
