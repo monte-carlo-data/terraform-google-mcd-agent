@@ -29,6 +29,11 @@ resource "random_id" "mcd_agent_id" {
 ## See details here: https://docs.getmontecarlo.com/docs/platform-architecture#customer-hosted-agent--object-storage-deployment
 ## ---------------------------------------------------------------------------------------------------------------------
 
+resource "google_project_service" "mcd_cloud_run_api" {
+  service            = "run.googleapis.com"
+  project            = var.project_id
+  disable_on_destroy = false
+} # To prevent any side-effects to other Cloud Run usage this resource (API) is not disabled on destroy.
 
 resource "google_storage_bucket" "mcd_agent_store" {
   name     = local.mcd_agent_store_name
@@ -135,6 +140,9 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
   }
   location = var.location
   project  = var.project_id
+  depends_on = [
+    google_project_service.mcd_cloud_run_api
+  ]
 }
 
 # Terraform lifecycle meta arguments do not support conditions so two copies of the resource are required to ignore
@@ -192,6 +200,9 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
       client
     ]
   }
+  depends_on = [
+    google_project_service.mcd_cloud_run_api
+  ]
 }
 
 ## ---------------------------------------------------------------------------------------------------------------------
