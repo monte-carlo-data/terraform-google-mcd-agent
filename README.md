@@ -63,13 +63,13 @@ yourself with using the agent. These [docs](https://cloud.google.com/docs/terraf
 provisioning resources in GCP.
 
 Note that all Terraform files must conform to the standards of `terraform fmt` and 
-the [standard module structure](https://developer.hashicorp.com/terraform/language/modules/develop).
+the [standard module structure](https://developer.hashicorp.com/terraform/language/modules/develop). 
+CircleCI will sanity check formatting and for valid tf config files. 
 It is also recommended you use Terraform Cloud as a backend.
-
 Otherwise, as normal, please follow Monte Carlo's code guidelines during development and review.
 
 When ready to release simply add a new version tag, e.g. v0.0.42, and push that tag to GitHub. 
 See additional details [here](https://developer.hashicorp.com/terraform/registry/modules/publish#releasing-new-versions).
 
 ## License
-See LICENSE for more information.
+See [LICENSE](https://github.com/monte-carlo-data/terraform-google-mcd-agent/blob/main/LICENSE) for more information.
