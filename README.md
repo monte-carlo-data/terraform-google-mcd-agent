@@ -87,3 +87,7 @@ details [here](https://developer.hashicorp.com/terraform/registry/modules/publis
 ## License
 
 See [LICENSE](https://github.com/monte-carlo-data/terraform-google-mcd-agent/blob/main/LICENSE) for more information.
+
+## Security
+
+See [SECURITY](https://github.com/monte-carlo-data/terraform-google-mcd-agent/blob/main/SECURITY.md) for more information.
