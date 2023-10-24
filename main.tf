@@ -35,6 +35,67 @@ resource "google_project_service" "mcd_cloud_run_api" {
   disable_on_destroy = false
 } # To prevent any side-effects to other Cloud Run usage this resource (API) is not disabled on destroy.
 
+resource "google_project_iam_custom_role" "mcd_agent_storage_role" {
+  role_id = "mcdAgentStoreageRole${random_id.mcd_agent_id.hex}"
+  title   = "MCD Agent Storage Role"
+  permissions = [
+    "storage.objects.create",
+    "storage.objects.delete",
+    "storage.objects.get",
+    "storage.objects.list",
+    "storage.objects.update",
+    "storage.buckets.get",
+    "storage.buckets.getIamPolicy"
+  ]
+  project = var.project_id
+}
+
+resource "google_project_iam_custom_role" "mcd_agent_project_role" {
+  role_id = "mcdAgentProjectRole${random_id.mcd_agent_id.hex}"
+  title   = "MCD Agent Project Role"
+  permissions = compact([
+    "iam.serviceAccounts.signBlob",
+    var.remote_upgradable ? "iam.serviceAccounts.actAs" : null,
+    var.remote_upgradable ? "run.operations.get" : null
+  ])
+  project = var.project_id
+}
+
+
+resource "google_service_account" "mcd_agent_service_sa" {
+  account_id   = "mcd-agent-service-sa-${random_id.mcd_agent_id.hex}"
+  display_name = "MCD Agent Service SA"
+  project      = var.project_id
+}
+
+resource "google_storage_bucket_iam_binding" "mcd_agent_storage_sa_binding" {
+  bucket = google_storage_bucket.mcd_agent_store.name
+  role   = "projects/${var.project_id}/roles/${google_project_iam_custom_role.mcd_agent_storage_role.role_id}"
+
+  members = [
+    "serviceAccount:${google_service_account.mcd_agent_service_sa.email}",
+  ]
+}
+
+resource "google_project_iam_binding" "mcd_agent_project_sa_binding" {
+  role = "projects/${var.project_id}/roles/${google_project_iam_custom_role.mcd_agent_project_role.role_id}"
+  members = [
+    "serviceAccount:${google_service_account.mcd_agent_service_sa.email}",
+  ]
+  project = var.project_id
+}
+
+resource "google_cloud_run_service_iam_binding" "mcd_agent_service_sa_remote_binding" {
+  count    = var.remote_upgradable ? 1 : 0
+  location = var.location
+  project  = var.project_id
+  service  = google_cloud_run_v2_service.mcd_agent_service_with_remote_upgrade_support[0].name
+  role     = "roles/run.developer"
+  members = [
+    "serviceAccount:${google_service_account.mcd_agent_service_sa.email}",
+  ]
+}
+
 resource "google_storage_bucket" "mcd_agent_store" {
   name     = local.mcd_agent_store_name
   location = var.location
@@ -59,38 +120,6 @@ resource "google_storage_bucket" "mcd_agent_store" {
   }
   uniform_bucket_level_access = true
   public_access_prevention    = "enforced"
-}
-
-resource "google_project_iam_custom_role" "mcd_agent_role" {
-  role_id = "mcdAgentRole${random_id.mcd_agent_id.hex}"
-  title   = "MCD Agent Role"
-  permissions = compact([
-    "storage.objects.create",
-    "storage.objects.delete",
-    "storage.objects.get",
-    "storage.objects.list",
-    "storage.objects.update",
-    "storage.buckets.get",
-    "storage.buckets.getIamPolicy",
-    var.remote_upgradable ? "iam.serviceAccounts.actAs" : null,
-    var.remote_upgradable ? "run.operations.get" : null
-  ])
-  project = var.project_id
-}
-
-resource "google_service_account" "mcd_agent_service_sa" {
-  account_id   = "mcd-agent-service-sa-${random_id.mcd_agent_id.hex}"
-  display_name = "MCD Agent Service SA"
-  project      = var.project_id
-}
-
-resource "google_storage_bucket_iam_binding" "mcd_agent_service_sa_binding" {
-  bucket = google_storage_bucket.mcd_agent_store.name
-  role   = "projects/${var.project_id}/roles/${google_project_iam_custom_role.mcd_agent_role.role_id}"
-
-  members = [
-    "serviceAccount:${google_service_account.mcd_agent_service_sa.email}",
-  ]
 }
 
 resource "google_cloud_run_v2_service" "mcd_agent_service" {
@@ -222,17 +251,6 @@ resource "google_cloud_run_service_iam_binding" "mcd_agent_invoker_sa_default_bi
   project  = var.project_id
   service  = var.remote_upgradable ? google_cloud_run_v2_service.mcd_agent_service_with_remote_upgrade_support[0].name : google_cloud_run_v2_service.mcd_agent_service[0].name
   role     = "roles/run.invoker"
-  members = [
-    "serviceAccount:${google_service_account.mcd_agent_invoker_sa.email}",
-  ]
-}
-
-resource "google_cloud_run_service_iam_binding" "mcd_agent_invoker_sa_remote_binding" {
-  count    = var.remote_upgradable ? 1 : 0
-  location = var.location
-  project  = var.project_id
-  service  = google_cloud_run_v2_service.mcd_agent_service_with_remote_upgrade_support[0].name
-  role     = "roles/run.developer"
   members = [
     "serviceAccount:${google_service_account.mcd_agent_invoker_sa.email}",
   ]
