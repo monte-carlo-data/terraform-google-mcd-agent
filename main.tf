@@ -50,6 +50,16 @@ resource "google_project_iam_custom_role" "mcd_agent_storage_role" {
   project = var.project_id
 }
 
+resource "google_project_iam_custom_role" "mcd_agent_service_role" {
+  count   = var.remote_upgradable ? 0 : 1
+  role_id = "mcdAgentServiceRole${random_id.mcd_agent_id.hex}"
+  title   = "MCD Agent Service Role"
+  permissions = [
+    "run.services.get"
+  ]
+  project = var.project_id
+}
+
 resource "google_project_iam_custom_role" "mcd_agent_project_role" {
   role_id = "mcdAgentProjectRole${random_id.mcd_agent_id.hex}"
   title   = "MCD Agent Project Role"
@@ -85,12 +95,11 @@ resource "google_project_iam_binding" "mcd_agent_project_sa_binding" {
   project = var.project_id
 }
 
-resource "google_cloud_run_service_iam_binding" "mcd_agent_service_sa_remote_binding" {
-  count    = var.remote_upgradable ? 1 : 0
+resource "google_cloud_run_service_iam_binding" "mcd_agent_service_sa_binding" {
   location = var.location
   project  = var.project_id
-  service  = google_cloud_run_v2_service.mcd_agent_service_with_remote_upgrade_support[0].name
-  role     = "roles/run.developer"
+  service  = var.remote_upgradable ? google_cloud_run_v2_service.mcd_agent_service_with_remote_upgrade_support[0].name : google_cloud_run_v2_service.mcd_agent_service[0].name
+  role     = var.remote_upgradable ? "roles/run.developer" : "projects/${var.project_id}/roles/${google_project_iam_custom_role.mcd_agent_service_role[0].role_id}"
   members = [
     "serviceAccount:${google_service_account.mcd_agent_service_sa.email}",
   ]
