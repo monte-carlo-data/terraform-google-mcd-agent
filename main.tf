@@ -65,6 +65,7 @@ resource "google_project_iam_custom_role" "mcd_agent_project_role" {
   title   = "MCD Agent Project Role"
   permissions = compact([
     "iam.serviceAccounts.signBlob",
+    "logging.logEntries.list",
     var.remote_upgradable ? "iam.serviceAccounts.actAs" : null,
     var.remote_upgradable ? "run.operations.get" : null
   ])
