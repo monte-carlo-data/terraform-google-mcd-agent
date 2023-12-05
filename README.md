@@ -19,7 +19,7 @@ Basic usage of this module:
 ```
 module "apollo" {
   source = "monte-carlo-data/mcd-agent/google"
-  version = "0.1.1"
+  version = "0.1.2"
 
   # Required variables
   generate_key      = true
