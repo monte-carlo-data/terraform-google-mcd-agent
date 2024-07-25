@@ -4,7 +4,6 @@ module "apollo" {
   remote_upgradable = true
   generate_key      = true
   project_id        = "mc-dev-data-collector"
-  image             = "montecarlodata/pre-release-agent:latest-cloudrun"
 }
 
 output "uri" {
