@@ -1,11 +1,9 @@
 # Agent Sample
 
-This example deploys a pre-release Monte Carlo Agent with remote upgrades and key generation enabled.
+This example deploys a Monte Carlo Agent with remote upgrades and key generation enabled.
 
 Note that this will persist a key in the remote state used by Terraform. Please take appropriate measures to protect
 your remote state.
-
-Also, the pre-release agent is in active development and not intended for production usage.
 
 ## Prerequisites
 

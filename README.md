@@ -1,6 +1,6 @@
-# Monte Carlo GCP Agent Module (Beta)
+# Monte Carlo GCP Agent Module
 
-This module deploys Monte Carlo's [containerized agent](https://hub.docker.com/r/montecarlodata/agent) (Beta) on GCP
+This module deploys Monte Carlo's [containerized agent](https://hub.docker.com/r/montecarlodata/agent) on GCP
 Cloud Run, along with storage, roles and service accounts.
 
 See [here](https://docs.getmontecarlo.com/docs/platform-architecture) for architecture details and alternative
@@ -19,7 +19,6 @@ Basic usage of this module:
 ```
 module "apollo" {
   source = "monte-carlo-data/mcd-agent/google"
-  version = "0.1.2"
 
   # Required variables
   generate_key      = true
