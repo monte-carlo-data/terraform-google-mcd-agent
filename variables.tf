@@ -58,10 +58,10 @@ variable "vpc_access" {
       egress    = string
       connector = optional(string)
 
-      network_interfaces = object({
+      network_interfaces = optional(object({
         network    = optional(string)
         subnetwork = optional(string)
-      })
+      }))
     })
     default = null
 }

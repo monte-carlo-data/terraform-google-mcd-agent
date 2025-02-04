@@ -151,7 +151,7 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
         egress    = var.vpc_access.egress
         connector = var.vpc_access.connector
         dynamic network_interfaces {
-          for_each = [1]
+          for_each = var.vpc_access.network_interfaces == null ? [] : [1]
           content {
             network    = var.vpc_access.network_interfaces.network
             subnetwork = var.vpc_access.network_interfaces.subnetwork
@@ -222,7 +222,7 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
         egress    = var.vpc_access.egress
         connector = var.vpc_access.connector
         dynamic network_interfaces {
-          for_each = [1]
+          for_each = var.vpc_access.network_interfaces == null ? [] : [1]
           content {
             network    = var.vpc_access.network_interfaces.network
             subnetwork = var.vpc_access.network_interfaces.subnetwork
