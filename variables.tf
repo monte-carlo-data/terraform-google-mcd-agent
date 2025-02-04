@@ -39,3 +39,29 @@ variable "generate_key" {
   EOF
   type        = bool
 }
+
+variable "ingress" {
+  description = "Ingress setting for the CloudRun service"
+  type        = string
+  default     = "INGRESS_TRAFFIC_ALL"
+}
+
+variable "custom_audiences" {
+  description = "Custom audiences for the CloudRun service"
+  type        = list(string)
+  default     = []
+}
+
+variable "vpc_access" {
+    description = "VPC Access settings for the CloudRun service"
+    type        = object({
+      egress    = string
+      connector = optional(string)
+
+      network_interfaces = object({
+        network    = optional(string)
+        subnetwork = optional(string)
+      })
+    })
+    default = null
+}
