@@ -145,12 +145,12 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
     }
     timeout         = local.mcd_agent_cr_timeout
     service_account = google_service_account.mcd_agent_service_sa.email
-    dynamic vpc_access {
+    dynamic "vpc_access" {
       for_each = var.vpc_access == null ? [] : [1]
       content {
         egress    = var.vpc_access.egress
         connector = var.vpc_access.connector
-        dynamic network_interfaces {
+        dynamic "network_interfaces" {
           for_each = var.vpc_access.network_interfaces == null ? [] : [1]
           content {
             network    = var.vpc_access.network_interfaces.network
@@ -216,12 +216,12 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
     }
     timeout         = local.mcd_agent_cr_timeout
     service_account = google_service_account.mcd_agent_service_sa.email
-    dynamic vpc_access {
+    dynamic "vpc_access" {
       for_each = var.vpc_access == null ? [] : [1]
       content {
         egress    = var.vpc_access.egress
         connector = var.vpc_access.connector
-        dynamic network_interfaces {
+        dynamic "network_interfaces" {
           for_each = var.vpc_access.network_interfaces == null ? [] : [1]
           content {
             network    = var.vpc_access.network_interfaces.network

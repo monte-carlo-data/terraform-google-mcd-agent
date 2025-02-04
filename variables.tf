@@ -53,15 +53,15 @@ variable "custom_audiences" {
 }
 
 variable "vpc_access" {
-    description = "VPC Access settings for the CloudRun service"
-    type        = object({
-      egress    = string
-      connector = optional(string)
+  description = "VPC Access settings for the CloudRun service"
+  type = object({
+    egress    = string
+    connector = optional(string)
 
-      network_interfaces = optional(object({
-        network    = optional(string)
-        subnetwork = optional(string)
-      }))
-    })
-    default = null
+    network_interfaces = optional(object({
+      network    = optional(string)
+      subnetwork = optional(string)
+    }))
+  })
+  default = null
 }
