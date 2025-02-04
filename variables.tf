@@ -41,7 +41,7 @@ variable "generate_key" {
 }
 
 variable "ingress" {
-  description = "Ingress setting for the CloudRun service"
+  description = "Ingress setting for the CloudRun service, one of: INGRESS_TRAFFIC_ALL, INGRESS_TRAFFIC_INTERNAL_ONLY, INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"
   type        = string
   default     = "INGRESS_TRAFFIC_ALL"
 }
@@ -61,8 +61,8 @@ variable "deletion_protection" {
 variable "vpc_access" {
   description = "VPC Access settings for the CloudRun service"
   type = object({
-    egress    = string
-    connector = optional(string)
+    egress    = string           # "ALL_TRAFFIC" or "PRIVATE_RANGES_ONLY"
+    connector = optional(string) # VPC Access connector name, format: projects/{project}/locations/{location}/connectors/{connector}, where {project} can be project id or number
 
     network_interfaces = optional(object({
       network    = optional(string)
