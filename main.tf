@@ -136,8 +136,9 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
   count = var.remote_upgradable ? 0 : 1
   name  = local.mcd_agent_cr_name
 
-  ingress          = var.ingress
-  custom_audiences = var.custom_audiences
+  ingress             = var.ingress
+  custom_audiences    = var.custom_audiences
+  deletion_protection = var.deletion_protection
   template {
     scaling {
       min_instance_count = local.mcd_agent_cr_min_instance_count
@@ -207,8 +208,9 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
   count = var.remote_upgradable ? 1 : 0
   name  = local.mcd_agent_cr_name
 
-  ingress          = var.ingress
-  custom_audiences = var.custom_audiences
+  ingress             = var.ingress
+  custom_audiences    = var.custom_audiences
+  deletion_protection = var.deletion_protection
   template {
     scaling {
       min_instance_count = local.mcd_agent_cr_min_instance_count

@@ -52,6 +52,12 @@ variable "custom_audiences" {
   default     = []
 }
 
+variable "deletion_protection" {
+  description = "Deletion protection setting for the CloudRun service"
+  type        = bool
+  default     = false
+}
+
 variable "vpc_access" {
   description = "VPC Access settings for the CloudRun service"
   type = object({
