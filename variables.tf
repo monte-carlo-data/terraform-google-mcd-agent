@@ -39,3 +39,43 @@ variable "generate_key" {
   EOF
   type        = bool
 }
+
+variable "ingress" {
+  description = "Ingress setting for the CloudRun service, one of: INGRESS_TRAFFIC_ALL, INGRESS_TRAFFIC_INTERNAL_ONLY, INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER."
+  type        = string
+  default     = "INGRESS_TRAFFIC_ALL"
+  validation {
+    condition     = contains(["INGRESS_TRAFFIC_ALL", "INGRESS_TRAFFIC_INTERNAL_ONLY", "INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER"], var.ingress)
+    error_message = "Invalid ingress setting. Must be one of: INGRESS_TRAFFIC_ALL, INGRESS_TRAFFIC_INTERNAL_ONLY, INGRESS_TRAFFIC_INTERNAL_LOAD_BALANCER."
+  }
+}
+
+variable "custom_audiences" {
+  description = "Custom audiences for the CloudRun service, for example ['https://example.loadbalancer.com']. For more information check: https://cloud.google.com/run/docs/configuring/custom-audiences."
+  type        = list(string)
+  default     = []
+}
+
+variable "deletion_protection" {
+  description = "Deletion protection setting for the CloudRun service."
+  type        = bool
+  default     = false
+}
+
+variable "vpc_access" {
+  description = "VPC Access settings for the CloudRun service. See the example under examples/agent_vpc."
+  type = object({
+    egress    = string           # "ALL_TRAFFIC" or "PRIVATE_RANGES_ONLY"
+    connector = optional(string) # VPC Access connector name, format: projects/{project}/locations/{location}/connectors/{connector}, where {project} can be project id or number
+
+    network_interfaces = optional(object({
+      network    = optional(string)
+      subnetwork = optional(string)
+    }))
+  })
+  default = null
+  validation {
+    condition     = var.vpc_access == null ? true : contains(["ALL_TRAFFIC", "PRIVATE_RANGES_ONLY"], var.vpc_access.egress)
+    error_message = "Invalid egress setting. Must be one of: ALL_TRAFFIC, PRIVATE_RANGES_ONLY."
+  }
+}

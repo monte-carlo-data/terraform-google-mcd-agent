@@ -135,6 +135,10 @@ resource "google_storage_bucket" "mcd_agent_store" {
 resource "google_cloud_run_v2_service" "mcd_agent_service" {
   count = var.remote_upgradable ? 0 : 1
   name  = local.mcd_agent_cr_name
+
+  ingress             = var.ingress
+  custom_audiences    = var.custom_audiences
+  deletion_protection = var.deletion_protection
   template {
     scaling {
       min_instance_count = local.mcd_agent_cr_min_instance_count
@@ -142,6 +146,20 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
     }
     timeout         = local.mcd_agent_cr_timeout
     service_account = google_service_account.mcd_agent_service_sa.email
+    dynamic "vpc_access" {
+      for_each = var.vpc_access == null ? [] : [1]
+      content {
+        egress    = var.vpc_access.egress
+        connector = var.vpc_access.connector
+        dynamic "network_interfaces" {
+          for_each = var.vpc_access.network_interfaces == null ? [] : [1]
+          content {
+            network    = var.vpc_access.network_interfaces.network
+            subnetwork = var.vpc_access.network_interfaces.subnetwork
+          }
+        }
+      }
+    }
     containers {
       image = var.image
       resources {
@@ -189,6 +207,10 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
 resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_support" {
   count = var.remote_upgradable ? 1 : 0
   name  = local.mcd_agent_cr_name
+
+  ingress             = var.ingress
+  custom_audiences    = var.custom_audiences
+  deletion_protection = var.deletion_protection
   template {
     scaling {
       min_instance_count = local.mcd_agent_cr_min_instance_count
@@ -196,6 +218,20 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
     }
     timeout         = local.mcd_agent_cr_timeout
     service_account = google_service_account.mcd_agent_service_sa.email
+    dynamic "vpc_access" {
+      for_each = var.vpc_access == null ? [] : [1]
+      content {
+        egress    = var.vpc_access.egress
+        connector = var.vpc_access.connector
+        dynamic "network_interfaces" {
+          for_each = var.vpc_access.network_interfaces == null ? [] : [1]
+          content {
+            network    = var.vpc_access.network_interfaces.network
+            subnetwork = var.vpc_access.network_interfaces.subnetwork
+          }
+        }
+      }
+    }
     containers {
       image = var.image
       resources {
