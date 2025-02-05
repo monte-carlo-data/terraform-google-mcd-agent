@@ -74,8 +74,4 @@ variable "vpc_access" {
     }))
   })
   default = null
-  validation {
-    condition     = var.vpc_access == null || contains(["ALL_TRAFFIC", "PRIVATE_RANGES_ONLY"], var.vpc_access.egress)
-    error_message = "Invalid ingress setting. Must be one of: ALL_TRAFFIC, PRIVATE_RANGES_ONLY."
-  }
 }
