@@ -192,6 +192,10 @@ resource "google_cloud_run_v2_service" "mcd_agent_service" {
         name  = "MCD_STORAGE_BUCKET_NAME"
         value = google_storage_bucket.mcd_agent_store.name
       }
+      env {
+        name  = "MCD_ADDITIONAL_ENV_VARS"
+        value = jsonencode(var.additional_env_vars)
+      }
     }
     max_instance_request_concurrency = local.mcd_agent_cr_max_instance_request_concurrency
   }
@@ -263,6 +267,10 @@ resource "google_cloud_run_v2_service" "mcd_agent_service_with_remote_upgrade_su
       env {
         name  = "MCD_STORAGE_BUCKET_NAME"
         value = google_storage_bucket.mcd_agent_store.name
+      }
+      env {
+        name  = "MCD_ADDITIONAL_ENV_VARS"
+        value = jsonencode(var.additional_env_vars)
       }
     }
     max_instance_request_concurrency = local.mcd_agent_cr_max_instance_request_concurrency
