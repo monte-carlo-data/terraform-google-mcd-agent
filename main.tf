@@ -18,7 +18,6 @@ locals {
   mcd_agent_cr_memory                           = "512Mi"
   mcd_agent_cr_max_instance_request_concurrency = 1
 }
-# temp
 
 resource "random_id" "mcd_agent_id" {
   byte_length = 4
