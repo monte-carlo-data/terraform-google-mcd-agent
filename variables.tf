@@ -56,6 +56,12 @@ variable "custom_audiences" {
   default     = []
 }
 
+variable "additional_env_vars" {
+  description = "Additional environment variables to set on the agent, as a map of name to value. Advanced/optional; used to enable optional agent features."
+  type        = map(string)
+  default     = {}
+}
+
 variable "deletion_protection" {
   description = "Deletion protection setting for the CloudRun service."
   type        = bool
